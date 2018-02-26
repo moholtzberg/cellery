@@ -1,0 +1,49 @@
+<div class="col-md-2">
+	<div class="panel panel-default">
+		
+		<div class="panel-heading">
+			<p><%= item.name %></p>
+		</div>
+		
+		<div class="panel-body text-center">
+			
+			<div class="text-center">
+				<%= image_tag "https://s3.amazonaws.com/247officesuppy/400/400/#{item.images&.first&.path}", :class => "media-object", :height => "100", :width => "100" %>
+			</div>
+		
+		
+		
+			<div class="text-center">
+				<% if item.current_user_actual_price.price < item.default_price&.price %>
+				<h5><span class="text-danger"><strong><del><%= number_to_currency(item.default_price&.price) %></del></strong></span></h5>
+				<h4><span class="text-default"><strong><%= number_to_currency(item.current_user_actual_price.price) %></strong></span><h4>
+				<% else %>
+				<h4><span class="text-default"><%= number_to_currency(item.default_price&.price) %></span><h4>
+				<% end %>
+				<% if item.recurring_price %>
+					<input type="submit" name="commit" value="Subscribe (<%= number_to_currency(item.recurring_price.price) %>)" class="btn btn-primary btn-sm btn-block margin-bottom">
+				<% end %>
+				<% if item.bulk_prices.any? %>
+					<div class="well well-sm">
+						<p class="border-bottom">Bulk prices:</p>
+						<% item.bulk_prices.each do |price| %>
+							<p>
+								<%= "#{price.min_qty}-#{price.max_qty} pcs.: #{number_to_currency(price.price)}" %>
+							</p>
+						<% end %>
+					</div>
+				<% end %>
+			</div>
+	
+		
+			<%= form_for @cart, url: add_to_cart_path, :class => "form-inline", :remote => true do |f| %>
+				<div class="form-group">
+					
+					<%= f.hidden_field :item_id, :value => item.id %>
+					<%= f.hidden_field :quantity, :value => 1 %>
+				</div>
+				<%= f.submit "Add To Cart", :class => "btn btn-primary btn-sm btn-block" %>
+			<% end %>
+		</div>
+	</div>
+</div>

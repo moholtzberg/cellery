@@ -1,0 +1,32 @@
+<% content_for :app_location do %>Admin / Customers / Index<% end %>
+<div id="customers" class="col-md-12">
+	
+	<table class="table table-bordered table-condensed" id="customers-table" data-source="<%= datatables_customers_path(format: :json) %>">
+  	<thead>
+			<tr>
+				<th>ID</th>
+				<th>Group</th>
+				<th>Name</th>
+				<th>Address 1</th>
+				<th>City</th>
+				<th>State</th>
+				<th>ZIP</th>
+				<th>Phone</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+
+	<%= link_to new_customer_path, :class => "btn btn-default pull-right", :remote => true do %><span class="glyphicon glyphicon-plus"></span><% end %>
+	
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			
+		</div>
+	</div>
+</div>

@@ -1,0 +1,38 @@
+ORDER CONFIRMATION - 24/7 Office Supply
+===============================================
+
+Dear <%= @order.ship_to_account_name %>,
+
+Thank you for your order, you will be notified when your order is ready to ship.
+
+Sincerely,
+
+The 24/7 Office Supply Team.
+
+
+ORDER DETAILS:
+================
+NUMBER:		<%= @order.number %>
+DATE:		<%= @order.submitted_at.strftime("%m/%d/%Y %I:%M %p") %>
+ACCOUNT:	<%= @order.account.name unless @order.account.nil? %>
+PO NUMBER:	<%= @order.po_number %>
+NOTES:		<%= @order.notes %>
+
+SHIP TO ADDRESS:
+================
+<%= @order.ship_to_account_name %>
+<%= @order.ship_to_attention %>
+<%= @order.ship_to_address_1 %>
+<%= @order.ship_to_address_2 %>
+<%= @order.ship_to_city %>, <%= @order.ship_to_state %> <%= @order.ship_to_zip %>
+<%= @order.ship_to_phone %>
+
+ORDER LINE ITEMS:
+================
+<% @order.order_line_items.order(:order_line_number).each do |o| %>
+	<% if o.quantity > 0 %>
+<%= o.order_line_number %>.	<%= o.quantity.to_i %> x <%= "#{o.item.number} / #{o.item.name}" %> @ <%= number_to_currency(o.price) %>/Each. = <%= number_to_currency(o.sub_total) %>
+	<% if o.item.item_type_id == 99 || o.description.present? %>---> <%= o.description %> <% end %>
+	<% end %>
+<% end %>
+

@@ -1,0 +1,65 @@
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title" id="myModalLabel">Edit Order</h4>
+</div>
+
+<div class="modal-body" id="modal-body">
+	
+	<% if flash[:error] %>
+	<div id="flash_messages" class="alert alert-danger" role="alert">
+		<strong><%= flash[:error] %></strong>
+	</div>
+	<% end %>
+	
+	<%= render :partial => "orders/form" %>
+	
+</div>
+
+<div class="modal-footer">
+	<div class="btn-toolbar pull-right" role="toolbar">
+	  <% if @order.incomplete? %>
+	  	<div class="btn-group" role="group">
+	    	<%= link_to("Submit", submit_order_path(@order.id), :method => "put", :class => 'btn btn-primary') %>
+	    </div>
+	  <% end %>
+	  <% if @order.pending? %>
+	  	<div class="btn-group" role="group">
+		    <%= link_to("Approve", approve_order_path(@order.id), :method => "put", :class => 'btn btn-primary') %>
+		    <%= link_to("Cancel", cancel_order_path(@order.id), :method => "put", :class => 'btn btn-primary') %>
+		  </div>
+	  <% end %>
+    <% if @order.awaiting_payment? %>
+	  	<div class="btn-group" role="group">
+	      <%= link_to("Toggle lock", lock_order_path(@order.id), :method => "put", :class => 'btn btn-primary') %>
+	      <% if @order.payments.where.not(success: true).size > 0 %>
+	        <%= link_to("Capture payment", finalize_payment_path(@order.payments.where.not(success: true).first.id), :method => "put", :class => 'btn btn-primary') %>
+	      <% end %>
+			</div>
+    <% end %>
+    <% if @order.credit_hold? %>
+	  	<div class="btn-group" role="group">
+      	<%= link_to("Remove Credit Hold", credit_hold_remove_order_path(@order.id), :method => "put", :class => 'btn btn-primary')  %>
+      </div>
+    <% end %>
+    <% if @order.awaiting_shipment? or @order.partially_shipped? %>
+	  	<div class="btn-group" role="group">
+	      <%= link_to("Ship", new_order_shipment_path(@order.id), :class => 'btn btn-primary')  %>
+	    </div>
+    <% end %>
+    <% if @order.awaiting_fulfillment? or @order.partially_fulfilled? %>
+	  	<div class="btn-group" role="group">
+      	<%= link_to("Fulfill", new_order_invoice_path(@order.id), :class => 'btn btn-primary')  %>
+      </div>
+    <% end %>
+    <% if @order.fulfilled? %>
+	  	<div class="btn-group" role="group">
+      	<%= link_to("Resend Invoice Notification", resend_invoice_order_path(:id => @order.id), :method => "put", :class => 'btn btn-primary') %>
+      </div>
+    <% end %>
+	  <div class="btn-group" role="group">
+			<%= button_tag(:name => :commit, :type => :submit, :class => "btn btn-primary", :form => "edit_order_#{@order.id}") do %>
+				Update Order 
+			<% end %>
+		</div>
+	</div>
+</div>

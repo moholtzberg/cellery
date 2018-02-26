@@ -1,0 +1,40 @@
+<div id="customer_name" class="form-group col-md-12">
+	<%= f.text_field :name, :class => "form-control", :placeholder => "Customer Name" %>
+</div>
+
+<div class="row">
+	
+	<div class="col-md-12">
+		<%= fields_for :address, resource.account do |b| %>
+
+			<%= b.hidden_field :name, value: 'main' %>
+
+			<div id="address" class="form-group col-md-12">
+				<%= b.text_field :address_1, :class => "form-control", :placeholder => "Address" %>
+			</div>
+
+			<div id="address_2" class="form-group col-md-12">
+				<%= b.text_field :address_2, :class => "form-control", :placeholder => "Address (contd.)" %>
+			</div>
+
+			<div id="city" class="form-group col-sm-12">
+				<%= b.text_field :city, :class => "form-control", :placeholder => "City" %>
+			</div>
+
+			<div id="state" class="form-group col-sm-6 col-xs-6">
+				<%= b.text_field :state, :class => "form-control", :placeholder => "State" %>
+			</div>
+
+			<div id="zip" class="form-group col-sm-6 col-xs-6">
+				<%= b.text_field :zip, :class => "form-control", :placeholder => "Zip" %>
+			</div>
+
+			<div id="phone" class="form-group col-xs-12">
+				<%= b.text_field :phone, :class => "form-control", :placeholder => "Phone" %>
+			</div>
+
+		<% end %>
+
+	</div>
+	
+</div>

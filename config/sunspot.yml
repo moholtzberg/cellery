@@ -1,0 +1,31 @@
+production:
+  solr:
+    hostname: <%= SECRET["WEBSOLR"]["PROD_HOST"] %>
+    port: 80
+    log_level: WARNING
+    path: <%= SECRET["WEBSOLR"]["PROD_PATH"] %>
+    read_timeout: 2
+    open_timeout: 0.5
+    # auto_commit_after_request: false
+
+development:
+  solr:
+    hostname: <%= SECRET["WEBSOLR"]["DEV_HOST"] %>
+    port: 80
+    log_level: INFO
+    path: <%= SECRET["WEBSOLR"]["DEV_PATH"] %>
+
+staging:
+  solr:
+    hostname: <%= SECRET["WEBSOLR"]["STG_HOST"] %>
+    port: 8983
+    log_level: INFO
+    path: <%= SECRET["WEBSOLR"]["STG_PATH"] %>
+
+test:
+  solr:
+    hostname: localhost
+    port: 8981
+    log_level: WARNING
+    path: /solr/test
+    

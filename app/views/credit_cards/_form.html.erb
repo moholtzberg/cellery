@@ -1,0 +1,44 @@
+<fieldset>
+
+	<div class="col-xs-12 col-md-12">
+		<label for="account_name">ACCOUNT</label>
+		<%= text_field_tag :account_name, @credit_card&.account_payment_service&.account_name, class: "form-control", name: "account_name", data: {autocomplete_source: accounts_path} %>
+	</div>
+	
+	<div class="col-xs-12 col-md-12">	
+		<label for="cardholder_name"><span class="hidden-xs">CARDHOLDER NAME</span><span class="visible-xs-inline">CARDHOLDER NAME</span></label>
+		<%= f.text_field :cardholder_name, class: "form-control" %>
+	</div>
+	
+	<div class="col-xs-12 col-md-12">
+		<label for="cardNumber">CARD NUMBER</label>
+		<div class="input-group">
+			<%= f.text_field :credit_card_number, {class: "form-control", :type => "tel", disabled: ['edit', 'update'].include?(params[:action])} %>
+			<span class="input-group-addon"><span class="glyphicon glyphicon-credit-card"></span></span>
+		</div>
+	</div>
+
+	<div class="col-xs-4 col-md-4">	
+		<label for="cardExpiry"><span class="hidden-xs">EXP MONTH</span><span class="visible-xs-inline">EXP MONTH</span></label>
+		<%= f.select :expiration_month, Date::MONTHNAMES.each_with_index.map { |month, i| [month, i] }, {selected: (@credit_card.expiration.split('/')[0].to_i if @credit_card.expiration)}, {:class => "form-control"} %>
+	</div>
+	
+	<div class="col-xs-4 col-md-4">
+		<label for="cardExpiry"><span class="hidden-xs">EXP YEAR</span><span class="visible-xs-inline">EXP YEAR</span></label>
+		<%= f.select :expiration_year, (Date.today.year..Date.today.year + 10).to_a, {include_blank: true, selected: (@credit_card.expiration.split('/')[1].to_i if @credit_card.expiration)}, {:class => "form-control"} %>
+	</div>
+
+	<div class="col-xs-4 col-md-4 pull-right">
+		<label for="cardCVC">CVV CODE</label>
+		<%= f.text_field :card_security_code, class: "form-control", disabled: ['edit', 'update'].include?(params[:action]) %>
+	</div>
+
+	<script>
+		jQuery(function() {
+			return $('#account_name').autocomplete({
+				source: $('#account_name').data('autocomplete-source')
+			})
+		});
+	</script>	
+	
+</fieldset>

@@ -1,0 +1,7 @@
+<% @items.each do |i| %>
+    <div class="col-md-12">
+      <%= render :partial => "shop/item", locals: {i: i} %>
+    </div>
+<% end %>
+
+<%= will_paginate @items, renderer: BootstrapPagination::Rails %>

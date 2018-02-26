@@ -1,0 +1,68 @@
+<% content_for :app_location do %>Admin / Equipment / Index<% end %>
+<div id="equipment" class="col-md-12">
+
+	<table class="table table-bordered table-condensed table-responsive">
+		
+		<tr>
+			<td colspan="9">
+				<form id="searchBox" accept-charset="UTF-8" action="/admin/equipment" method="get" role="search">
+					<input type="text" class="form-control" id="term" name="term" placeholder="Enter Equipment Number, Serial Number or Customer Name" value="<%= params[:term] %>">
+				</form>
+			</td>
+			
+		</tr>
+		
+		<tr>
+			<th class="hidden-xs"><%= sortable "equipment.id", "ID" %></th>
+			<th><%= sortable "equipment.number", "Number" %></th>
+			<th>Make/<%= sortable "models.number", "Model" %></th>
+			<th><%= sortable "serial", "Serial" %></th>
+			<th class="hidden-xs"><%= sortable "customers.name", "Customer Name" %></th>
+			<th class="hidden-xs">Active Alerts</th>
+      <th>Is Managed?</th>
+			<th>&nbsp;</th>
+		</tr>
+		
+		<% @equipment.each do |a| %>
+		<tr>
+			<td class="hidden-xs"><%= a.id %></td>
+			<td><%= a.number %></td>
+			<td><%= a.machine_model.make_name if a.machine_model.present? %> / <%= a.machine_model.number if a.machine_model.present? %></td>
+			<td><%= a.serial %></td>
+			<td><%= a.customer.name if a.customer.present? %></td>
+			<td><%= a.alerts.count %></td>
+      <td class="text-center"><%= a.is_managed? %></td>
+			<td class="text-center">
+			
+				<div class="dropdown">
+					<button class="btn btn-default btn-xs dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
+						<li><%= link_to("View", equipment_path(a.id))  %></li>
+						<li><%= link_to("Edit", edit_equipment_path(a.id), :remote => true)  %></li>
+						<li><%= link_to("Delete", equipment_path(a.id), :method => "delete", :remote => true)  %></li>
+					</ul>
+				</div>
+			
+			</td>
+		</tr>
+		<% end %>
+
+	</table>
+	
+	<%= will_paginate @equipment, renderer: BootstrapPagination::Rails %>
+	
+	<%= link_to new_equipment_path, :class => "btn btn-default pull-right", :remote => true do %><span class="glyphicon glyphicon-plus"></span><% end %>
+	
+	<%= link_to new_equipment_import_path, :class => "btn btn-default pull-right" do %><span class="fa fa-upload"></span><% end %>
+	
+</div>
+
+<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			
+		</div>
+	</div>
+</div>

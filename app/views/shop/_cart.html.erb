@@ -1,0 +1,25 @@
+<div class="hidden-xs">
+	<%= link_to cart_path, :class => "btn btn-success navbar-btn btn-xs" do %>
+		<i class="fa fa-shopping-cart"></i>
+		<span id="cart_item_count">&nbsp;
+		<% if @cart.nil? or @cart.empty? %>
+			Cart Empty
+		<% else %>
+			<%= "#{@cart.item_count.to_i} item".pluralize(@cart.item_count) %> in your cart 
+		<% end %>
+		</span>
+	<% end %>
+</div>
+
+<div class="hidden-sm hidden-md hidden-lg hidden-xl">
+	<%= link_to cart_path, :class => "btn btn-success navbar-btn" do %>
+		<i class="fa fa-shopping-cart"></i>
+		<span id="cart_item_count">&nbsp;
+			<% if @cart.nil? or @cart.empty? %>
+				Cart Empty
+			<% else %>
+				<%= "#{@cart.item_count.to_i} item".pluralize(@cart.item_count) %> in your cart 
+			<% end %>
+		</span>
+	<% end %>
+</div>

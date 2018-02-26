@@ -1,0 +1,8 @@
+<% if flash[:error] %>
+  $(".modal-content").html("<%= j render :template => 'items/new.html', :format => 'html' %>")
+<% else %>
+  $('#myModal').modal("hide")
+  $('body').removeClass('modal-open')
+  $('.modal-backdrop').remove()
+  $("#items-table").DataTable().draw('full-reset');
+<% end %>

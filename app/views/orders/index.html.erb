@@ -1,0 +1,57 @@
+<% content_for :app_location do %>Admin / Orders / Index<% end %>
+<div id="orders" class="col-md-12">
+
+	<table class="table table-bordered table-condensed" id="orders-table" data-source="<%= datatables_orders_path(format: :json, from: params[:action]) %>">
+  	<thead>
+      <tr class="filters">
+        <th colspan="10"><%= button_tag 'Filter Columns', type: "button", class: "btn btn-primary pull-right", data: { toggle: "modal", target: "#filterModal" } %></th>
+      </tr>
+			<tr>
+				<th>Number</th>
+				<th>Account</th>
+				<th>Total</th>
+				<th>Sub Total</th>
+				<th>Shipped</th>
+				<th>Fulfilled</th>
+				<th>Balance Due</th>
+				<th>Submitted At</th>
+				<th>State</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+
+	<%= link_to new_order_path, :class => "btn btn-default pull-right", :remote => false do %><span class="glyphicon glyphicon-plus"></span><% end %>
+	
+</div>
+
+<div id="myModal" class="modal fade" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			
+		</div>
+	</div>
+</div>
+
+<div id="filterModal" class="modal fade" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Filter Columns</h4>
+      </div>
+
+      <div class="modal-body" id="modal-body">
+      </div>
+
+      <div class="modal-footer">
+        <div class="btn-group" role="group">
+          <button type="button" id="update_filters" class="btn btn-primary">Update Filters</button>
+          <button type="button" id="cancel_filters" class="btn btn-default">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

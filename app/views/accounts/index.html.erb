@@ -1,0 +1,64 @@
+<% content_for :app_location do %>Admin / Accounts / Index<% end %>
+<div id="accounts" class="col-md-12">
+	
+	<table class="table table-bordered table-condensed">
+		
+		<tr>
+			<td colspan="9">
+				<form id="searchBox" accept-charset="UTF-8" action="<%= accounts_path(search_params.except(:page)) %>" method="get" role="search" data-remote="true">
+					<input type="text" class="form-control" id="term" name="term" placeholder="Enter account name" value="<%= params[:term] %>">
+				</form>
+			</td>
+		</tr>
+		
+		<tr>
+			<th class="hidden-xs"><%= sortable "accounts.id", 'ID' %></th>
+			<th><%= sortable "accounts.group_id", "Group" %></th>
+			<th><%= sortable "accounts.name", "Name" %></th>
+			<th class="hidden-xs">Address 1</th>
+			<th class="hidden-xs"><%= sortable "addresses.city", "City" %></th>
+			<th class="hidden-xs"><%= sortable "addresses.state", "State" %></th>
+			<th class="hidden-xs"><%= sortable "addresses.zip", "Zip" %></th>
+			<th class="hidden-xs">Taxable</th>
+			<th>&nbsp;</th>
+		</tr>
+
+		<% @accounts.each do |a| %>
+		<tr>
+			<td class="hidden-xs"><%= a.id %></td>
+			<td><%= a.group_name %></td>
+			<td><%= a.name %></td>
+			<td class="hidden-xs"><%= a.address_1 %></td>
+			<td class="hidden-xs"><%= a.city %></td>
+			<td class="hidden-xs"><%= a.state %></td>
+			<td class="hidden-xs"><%= a.zip %></td>
+			<td class="hidden-xs"><% if a.is_taxable? %><i class="fa fa-check-circle-o text-success" aria-hidden="true"></i><% end %></td>
+			<td class="text-center">
+				<div class="dropdown">
+					<button class="btn btn-default btn-xs dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
+						<li><%= link_to("View", account_path(a.id))  %></li>
+						<li><%= link_to("Edit", edit_account_path(a.id, search_params), :remote => true)  %></li>
+					</ul>
+				</div>
+			</td>
+		</tr>
+		<% end %>
+
+	</table>
+		
+	<%= will_paginate @accounts, params: search_params.except(:page).merge(action: 'index'), renderer: BootstrapPagination::Rails %>
+		
+	<%= link_to new_account_path(search_params), :class => "btn btn-default pull-right", :remote => true do %><span class="glyphicon glyphicon-plus"></span><% end %>
+	
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			
+		</div>
+	</div>
+</div>

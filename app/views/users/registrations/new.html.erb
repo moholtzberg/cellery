@@ -1,0 +1,37 @@
+<% @body_id = 'signup' %>
+<%= devise_error_messages! %>
+<div class="col-md-8 col-md-offset-2">
+	
+	<div class="panel panel-default">
+		
+		<div class="panel-heading">
+			<h3 class="panel-title"><%= I18n.t(:new_user) %></h3>
+		</div>
+		
+		<div id="new-user" class="panel-body" data-hook="login">
+			
+			<%= form_for(resource, as: resource_name, url: user_registration_path) do |f| %>
+			
+			
+				<%= render :partial => 'user_form', :locals => { :f => f } %>
+				
+				
+				<p>
+					<%= flash[:recaptcha_error] %>
+					<%= recaptcha_tags %>
+				</p>
+				
+				<p><%= f.submit I18n.t(:create), :class => 'btn btn-lg btn-success btn-block' %></p>
+		
+			
+			<% end %>
+			<div class="text-center">
+				<%= I18n.t(:or) %> 
+				<%= link_to I18n.t(:login_as_existing), user_session_path %>
+			</div>
+			
+		</div>
+		
+	</div>
+	
+</div>

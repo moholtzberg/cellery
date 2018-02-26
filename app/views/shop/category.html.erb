@@ -1,0 +1,48 @@
+<% content_for :title do %><%= @category.name %><% end %>
+
+<div class="page-header">
+	<h1><%= @category.name %></h1>
+</div>
+
+<% if (@category.children.count > 0) || (@items.facets.count > 0) %>
+	<% col = 9 %>
+	<div class="col-md-3 row">
+	
+		<ul class="nav nav-pills">
+		<% @category.children.each do |cat| %>
+			<li><%= link_to "#{cat.name} (#{cat.items.count})", "#{cat.slug}" %></li>
+		<% end %>
+		</ul>
+	
+		<%= render :partial => "facets", :locals => {:items => @items} %>
+	
+	</div>
+<% else %>
+	<% col = 12 %>
+<% end %>
+
+<div class="col-md-<%= col %>" id="search-items">
+	<%= render :partial => "search_items", :locals => {:items => @items} %>
+</div>
+
+<% if @items and @items.results.size > 0 %>
+	<%= will_paginate @items.results, renderer: BootstrapPagination::Rails %>
+<% end %>
+
+<script>
+  $(document).on('click', '#facets a[data-remote=true]', function(e) {
+    history.pushState({}, '', $(this).attr('href'));
+  });
+
+  $(window).on('popstate', function () {
+    $.get(document.location.href)
+  });
+
+  $(document).ajaxStart(function() {
+    $('body').append('<div class="preloader-overlay"></div>');
+  });
+
+  $(document).ajaxStop(function() {
+    $('.preloader-overlay').remove();
+  })
+</script>

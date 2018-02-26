@@ -1,0 +1,83 @@
+<table class="table table-bordered table-condensed table-striped table-hover table-responsive">
+	
+	<thead>
+		
+		<th>
+			
+			<td width="50%">Item</td>
+			<td width="10%">Qty.</td>
+			<td width="10%">Quantity Canceled</td>
+			<td width="10%">Actual Quantity</td>
+			<td width="9%">Price</td>
+			<td width="10%">Subtotal</td>
+			<td width="1%">&nbsp;</td>
+			
+		</th>
+		
+	</thead>
+	
+	<tbody id="line_items">
+		
+		<% @order.order_line_items.each do |ol| %>
+		
+		<tr class="line_item" data-order_line_item_id="<%= ol.id %>">
+			
+			<td>
+				<%= ol.order_line_number %>
+			</td>
+			
+			<td>
+				<%= ol.item.number unless ol.item.nil? %> / <%= ol.item.name unless ol.item.nil? %>
+				<% if ol.description.present? %>
+					<br/>
+				 (<%= ol.description %>)
+				<% end %>
+				
+			</td>
+			<td class="quantity">
+				<%= best_in_place ol, :quantity %>
+			</td>
+			
+			<td class="quantity_canceled">
+				<%= best_in_place ol, :quantity_canceled %>
+			</td>
+			
+			<td class="actual_quantity">
+				<%= ol.actual_quantity %>
+			</td>
+			
+			<td class="price">
+				<%= best_in_place ol, :price, :value => number_to_currency(ol.price.to_f) %>
+			</td>
+			
+			<td class="sub_total">
+				<%= ol.actual_quantity * ol.price.to_f %>
+			</td>
+			
+			<td span="10%" class="text-center">
+				<%= link_to order_line_item_path(ol.id), :method => :delete, :remote => true do %><i class="fa fa-trash"></i><% end %>
+			</td>
+			
+		</tr>
+		
+		<% end %>
+		
+	</tbody>
+	
+	<tfooter>
+		<tr>
+			<td colspan="7">Subtotal</td>
+			<td colspan="2"><%= number_to_currency(@order.sub_total) %></td>
+		</tr>
+	</tfooter>
+		
+</table>
+<script>
+	$('.best_in_place').bind("ajax:success", function (e) {
+		//var qty = $(this).closest('tr').attr("data-order_line_item_id").val()
+		var qty = e.currentTarget
+		console.log(qty[0])
+		var parent = e.currentTarget.parent()
+		$(this).closest('tr').effect('highlight');
+	});
+</script>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+	
+	<head>
+		<title><%= yield :app_location %></title>
+		<%= stylesheet_link_tag 'admin', media: 'all', 'data-turbolinks-track' => 'reload' %>
+		<%# wicked_pdf_stylesheet_link_tag "admin", media: 'all' -%>
+		<%# wicked_pdf_stylesheet_link_tag "print", media: 'all' -%>
+		<%= javascript_include_tag 'application', 'data-turbolinks-track' => 'reload' %>
+		<%= csrf_meta_tags %>
+		<meta name="viewport" content="width=device-width, initial-scale=1 maximum-scale=1, user-scalable=0">
+	</head>
+
+	<body>
+		
+		<div id="sidebar-nav" class="navmenu navmenu-fixed-left offcanvas-xs">
+			<%= render :partial => "layouts/nav" %>
+		</div>
+		
+		<div class="navbar navbar-default navbar-fixed-top">
+			
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="offcanvas" data-target="#sidebar-nav" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+					
+				<a class="navbar-brand" href="/">Welcome <%= current_user.first_name %></a>
+			</div>
+
+			<a href="<%= destroy_user_session_path %>" id="logout" class="btn btn-warning pull-right hidden-xs hidden-sm" data-method="delete">
+				<i class="fa fa-fw fa-sign-out"></i>Sign Out
+			</a>
+			
+		</div>
+		
+		<div id="clearTop" class="clearfix hidden-xs hidden-sm hidden-md"></div>
+		
+		<div id="main-panel">
+			
+			<div id="flashes">
+				<%= bootstrap_flash %>
+			</div>
+			
+			<% if !ImportHistory.first.nil? and ImportHistory.first.is_processing == 1 %>
+				<div class="col-md-offset-1 col-md-10">
+					<br>
+					<div class="alert alert-success alert-dismissible" role="alert">
+						<strong>Succuss!: </strong> <%=notice%>.
+						Rows imported:<b><span class="js-imported">0</span></b>,
+						Rows failed:<b><span class="js-fail">0</span></b>,
+						Rows in queue:<b><span class="js-queue">0</span></b>
+						Last ID imported:<b><span class="js-last-id">0</span></b>.
+					</div>
+					<div class="alert alert-danger alert-dismissible js-failed-rows-cont" role="alert" style="display:none">
+						<strong>Failed lines!: </strong> <span class="js-failed-rows"></span>
+					</div>
+				</div>
+			<% end %>
+			
+			<%= yield %>
+		</div>
+		
+		<% if Rails.env.development? || (current_user and current_user.email == "admin@247officesupply.com") %>
+			<% if params[:show_console]%>
+				<%= console %>
+			<% end %>	
+		<% end %>
+		
+	</body>
+	
+	<% if Rails.env.production? %>
+	<script type='text/javascript'>
+	window.__lo_site_id = 60729;
+	(function() {
+		var wa = document.createElement('script'); wa.type = 'text/javascript'; wa.async = true;
+		wa.src = 'https://d10lpsik1i8c69.cloudfront.net/w.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(wa, s);
+	})();
+	</script>
+	<% end %>
+	
+</html>
+
+
+<% if !ImportHistory.first.nil? and ImportHistory.first.is_processing == 1 %>
+	<script>
+		
+		var timer;
+		function check_for_import(){
+			$(document).ready(function() {
+			  $.ajax({
+			    url: "/admin/check_for_import",
+			    type: "GET"
+			  }).done(function(response) {
+			  	//print json result on the screen
+			  	$(".js-imported").text(response.nb_imported);
+			  	$(".js-fail").text(response.nb_failed);
+			  	$(".js-queue").text(response.nb_in_queue);
+			  	$(".js-failed-rows").text(response.failed_lines);
+				$(".js-last-id").text(response.last_id);
+			  	// show failed rows numbers
+			  	if (response.failed_lines !== ""){
+			  		$(".js-failed-rows-cont").show();
+			  	}
+			  	// stop the checker
+			  	if (String(response.is_processing) === "0"){
+			  		clearInterval(timer);
+			  		timer = "";
+			  	}
+			  });
+			});
+			
+		}
+
+		timer=setInterval("check_for_import()", 5000);
+
+	</script>
+<% end %>
+
+<script type="text/javascript" src="https://appcenter.intuit.com/Content/IA/intuit.ipp.anywhere.js"></script>
+
+<script>
+    intuit.ipp.anywhere.setup({menuProxy: '/path/to/blue-dot', grantUrl: '<%= authenticate_home_url %>'});
+</script>

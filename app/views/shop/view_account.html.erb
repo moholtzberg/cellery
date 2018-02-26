@@ -1,0 +1,47 @@
+<% if params[:account_id] %>
+	
+	<% unless @account.nil? %>
+		<%= render :partial => "addresses", :locals => {:account => @account} %>
+	<% end %>
+
+	<h3>Orders</h3>
+	<table class="table table-bordered">
+		<tr>
+			<th colspan="7">Recent Orders</th>
+		</tr>
+	  <tr>
+	    <th>Number</th>
+	    <th>Total</th>
+	    <th>Shipped</th>
+	    <th>Balance Due</th>
+	    <th>Submitted At</th>
+	    <th>State</th>
+	    <th>&nbsp;</th>
+	  </tr>
+	  <% @orders.each do |order| %>
+			<tr>
+			  <td><%= order.number %></td>
+			  <td><%= number_to_currency(order.total) %></td>
+			  <td><%= number_to_currency(order.amount_shipped) %></td>
+			  <td><%= number_to_currency(order.balance_due) %></td>
+			  <td><%= order.submitted_at&.strftime("%m/%d/%y %I:%M %p") %></td>
+			  <td><%= order.state %></td>
+			  <td class="text-center">
+					<%= link_to my_account_order_path(order.number) , :class => "btn btn-primary btn-xs text-left" do %><i class="fa fa-shopping-cart"></i> ORDER<% end %>
+						<% if order.state == 'fulfilled' || order.state == 'completed' %>
+							
+							<%= link_to "/my_account/invoice/#{order.number}", :class => "btn btn-success btn-xs text-left" do %><i class="fa fa-file-o"></i> INVOICE<% end %>
+							
+							<%= link_to new_my_account_return_authorization_path(order_id: order.id), remote: true, :class => "btn btn-warning btn-xs text-left" do %><i class="fa fa-arrow-left"></i> RETURN<% end %>
+							
+						<% end %>
+			  </td>
+			</tr>
+		<% end %>
+		<tr>
+			<td class="text-center" colspan="8"><%= will_paginate @orders, renderer: BootstrapPagination::Rails %></td>
+		</tr>
+	
+	</table>
+		
+<% end %>

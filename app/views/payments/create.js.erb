@@ -1,0 +1,8 @@
+<% if @payment.errors.any? %>
+  $(".modal-content").html("<%= j render :template => 'payments/new.html', :format => 'html' %>")
+<% else %>
+  $('#myModal').modal("hide")
+  $('body').removeClass('modal-open')
+  $('.modal-backdrop').remove()
+  $("#payments").replaceWith("<%= j render :template => 'payments/index.html', :format => 'html' %>")
+<% end %>

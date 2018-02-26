@@ -1,0 +1,35 @@
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title" id="myModalLabel">New Payment</h4>
+</div>
+
+<div class="modal-body" id="modal-body">
+	
+	<% if @payment.errors.any? %>
+		<div id="flash_messages" class="alert alert-danger" role="alert">
+			<strong><%= @payment.errors.full_messages.join(', ') %></strong>
+		</div>
+	<% end %>
+	
+	
+	<%= form_for @payment, as: :payment, url: payments_path(search_params), :remote => true, :html => {:class => "form-horizontal"} do |f| %>
+		<%= render :partial => "form", :locals => {:f => f} %>
+	<% end %>
+	
+</div>
+
+<div class="modal-footer">
+	<%= button_tag(:name => :commit, :type => :submit, :class => "btn btn-primary", :form => "new_payment") do %>
+		Create Payment 
+	<% end %>
+</div>
+
+<%# @order.id %>
+<%# @order.number %>
+<%# @order.account.credit_cards.each do |cc| %>
+	<%# c = Stripe::Customer.retrieve(@order.account.stripe_customer_id).sources.retrieve(cc.stripe_card_id) %>
+	<%# c.brand %> <%# c.last4 %><%# c.exp_month %><%# c.exp_year %>
+<%# end %>
+<%# f.select :credit_card_id, @order.account.credit_cards.collect {|c| ["#{Stripe::Customer.retrieve(@order.account.stripe_customer_id).sources.retrieve(c.stripe_card_id).last4}", c.id]} %>
+<%# f.hidden_field :account_id, :value => @order.account_id %>
+<%# f.hidden_field :order_id, :value => @order.id %>

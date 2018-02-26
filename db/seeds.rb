@@ -1,0 +1,4 @@
+Item.where(id: 5000..5500).map {|a| File.open('some-file.txt', 'a') { |f| f.write("i = Item.create(number: \"#{a.number}\", name: \"#{a.name}\", description: \"#{a.description}\", price: \"#{a.price}\", active: \"#{a.active}\")\n")}; 
+  i.item_properties.map {|s| File.open('some-file.txt', 'a') { |f| f.write("s = ItemPropery.create(item_id: \"#{s.item_id}\", key: \"#{s.key}\", value: \"#{s.value}\", order: \"#{s.order}\", active: \"#{s.active}\", type: \"#{s.type}\")\n")}}
+  i.item_categories.map {|c| File.open('some-file.txt', 'a') { |f| f.write("c = ItemCategory.create(item_id: \"#{c.item_id}\", category_id: \"#{c.category_id}\")\n")}}
+}

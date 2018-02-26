@@ -1,0 +1,208 @@
+<% content_for :title do %><%= @category.name %> <%= @item.name %><% end %>
+
+<%# http://www.practicalecommerce.com/articles/121511-Create-Responsive-Ecommerce-Product-Pages-with-Bootstrap %>
+
+<div class="col-md-6">
+	
+	<div class="row">
+		<div class="col-md-3">
+			<% @item.images.each do |img| %>
+				<a><%= image_tag "https://s3.amazonaws.com/247officesuppy/400/400/#{img.path}", :height => "100", :class => "thumbnail", :id => img.id %></a>
+			<% end %>	
+		</div>
+		<div class="col-md-9">
+			<%= image_tag "https://s3.amazonaws.com/247officesuppy/400/400/#{@item.images&.first&.path}", :width => "350", :id => "main_image" %>
+		</div>
+	</div>
+	
+</div>
+
+<script>
+	$(".thumbnail").click(function(event){
+		var src = $("#"+ event.currentTarget.id).attr("src")
+		$("#main_image").attr("src", src)
+	})
+</script>
+
+<div class="col-md-6">
+
+	<div class="row">
+		<div class="col-md-12">
+			<h2><%= @item.name %></h2>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<% unless @item.brand.blank? or @item.brand.name.blank? %>
+			<strong>Brand:</strong> <span class="monospaced"><%= @item.brand.name %></span>
+			<br/>
+			<% end %>
+			<strong>Number:</strong> <span class="monospaced"><%= @item.number %></span>
+			<br/>
+			<% @item.categories.each do |cat| %>
+				<span class="label label-primary"><%= cat.name %></span>
+			<% end %>
+			<br/>
+			<h4><%= @item.features.where(:key => "summary_selling_statement").first.value unless @item.features.find_by(:key => "summary_selling_statement").nil? %></h4>
+		</div>
+	</div>
+
+	<div class="row">
+
+		<div class="col-md-4 bottom-rule">
+			<h2 class="product-price"><%= number_to_currency(@item.actual_price)%></h2>
+		</div>
+		<div class="col-md-4 bottom-rule">
+			<% if @item.prices.actual.bulk.any? %>
+				<div class="well well-sm">
+					<p class="border-bottom">Bulk prices:</p>
+					<% @item.prices.actual.bulk.order('min_qty asc').each do |price| %>
+						<p>
+							<%= "#{price.min_qty}-#{price.max_qty} pcs.: #{number_to_currency(price.price)}" %>
+						</p>
+					<% end %>
+				</div>
+			<% end %>
+		</div>
+		<div class="col-md-4 bottom-rule">
+			<% if @item.prices.actual.recurring.any? %>
+				<%= link_to "Subscribe (#{number_to_currency(@item.prices.actual.select{|p| p._type == 'Recurring'}[0].price)})", new_my_account_subscription_path(subscription: {item_id: @item.id, account_id: current_user&.account_id, state: 'new'}), remote: true, class: "btn btn-primary btn-sm btn-block margin-top margin-bottom" %>
+			<% end %>
+		</div>
+	</div><!-- end row -->
+
+	<hr/>
+
+	<div class="row add-to-cart">
+		<%= form_for @cart, url: add_to_cart_path, :remote => true do |f| %>
+		<div class="col-md-5 product-qty">
+			<span id="add_qty" class="btn btn-default btn-lg btn-qty">
+				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+			</span>
+			<%= f.hidden_field :item_id, :value => @item.id %>
+			<%= f.text_field :quantity, :value => 1, :class => "btn btn-default btn-lg btn-qty" %>
+			<span id="subtract_qty" class="btn btn-default btn-lg btn-qty">
+				<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+			</span>
+		</div>
+		
+		<script>
+		$("#add_qty").click(function(e){
+			var a = Number($("#cart_quantity").val());
+			console.log(a)
+			$("#cart_quantity").val(a + 1);
+		})
+		$("#subtract_qty").click(function(e){
+			var a = Number($("#cart_quantity").val());
+			console.log(a)
+			if (a > 1) {
+				$("#cart_quantity").val(a - 1);
+			};
+		})
+		
+		</script>
+		
+		<div class="col-md-4">
+			<button type="submit" class="btn btn-lg btn-brand btn-full-width">Add to Cart</button>
+		</div>
+		<% end %>
+		<div class="col-md-3">
+			<%= render partial: 'shop/list_select', locals: {item: @item} %>
+		</div>
+	</div><!-- end row -->
+	
+	<div class="row">
+		<div class="col-md-12 bottom-rule top-10"></div>
+	</div><!-- end row -->
+
+	<hr/>
+	
+	<% if @item.sku_group_neighbours.any? %>
+		<div class="row">
+			<div class="col-md-12">
+				<h4>Other Product Options</h4>
+				<div class="dropdown">
+				  <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 100%; text-align: left" class="btn btn-default">
+				    <%= @item.name %>
+				    <span class="caret"></span>
+				  </button>
+				  <ul class="dropdown-menu" aria-labelledby="dLabel" style="width: 100%">
+						<% @item.sku_group_neighbours.each do |n| %>
+					  	<li class="sku-group-item">
+					  		<div class="row no-margin-left no-margin-right">
+									<div class="col-sm-10">
+							  	  <%= link_to n.name, shop_item_path(n.default_category, n) %>
+									</div>
+									<div class="col-sm-2">
+										<%= number_to_currency(n.actual_price) %>
+									</div>
+					  		</div>
+					  	</li>
+				  	<% end %>
+				  </ul>
+				</div>
+			</div>
+		</div>
+
+		<hr/>
+	<% end %>
+
+	<!-- Nav tabs -->
+	<ul class="nav nav-tabs" role="tablist">
+		<li role="presentation" class="active">
+			<a href="#features" aria-controls="features" role="tab" data-toggle="tab">Features</a>
+		</li>
+		<li role="presentation">
+			<a href="#description" aria-controls="description" role="tab" data-toggle="tab">Description</a>
+		</li>
+		<li role="presentation">
+			<a href="#specs" aria-controls="notes" role="tab" data-toggle="tab">Specs</a>
+		</li>
+	</ul>
+
+	<!-- Tab panes -->
+	<div class="tab-content">
+		<div role="tabpanel" class="tab-pane active" id="features">
+			<div class="row">
+				<div class="col-md-12">
+					<br/>
+					<ul>
+						<% @item.features.where("key LIKE ?", "%selling_point_%").each do |feat| %>
+							<% unless feat.value.blank? %>
+							<li><%= feat.value %></li>
+							<% end %>
+						<% end %>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div role="tabpanel" class="tab-pane" id="description">
+			<div class="row">
+				<div class="col-md-12">
+					<br/>
+					<p><%= @item.description %></p>
+				</div>
+			</div>
+		</div>
+		<div role="tabpanel" class="tab-pane" id="specs">
+			<div class="row">
+				<div class="col-md-12">
+					<p>
+						<table class="table table-bordered table-condensed table-striped">
+						<% @item.specifications.each do |pr| %>
+							<%# unless pr.key =~ /(selling_point_|summary_selling_statement)/ %>
+							<tr>
+								<td><strong><%= pr.key%></strong></td>
+								<td><%= pr.value %></td>
+							</tr>
+							<%# end %>
+						<% end %>
+						</table>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>

@@ -1,0 +1,33 @@
+<% content_for :app_location do %>Admin / Items / Index<% end %>
+<div id="items" class="col-md-12">
+
+	<table class="table table-bordered table-condensed" id="items-table" data-source="<%= datatables_items_path(format: :json) %>">
+  	<thead>
+			<tr>
+				<th>ID</th>
+				<th>Number</th>
+				<th>Name</th>
+				<th>Default Price</th>
+				<th>Times Purchased</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+	
+	<%= link_to new_item_path, :class => "btn btn-default pull-right", :remote => true do %><span class="glyphicon glyphicon-plus"></span><% end %>
+	
+	<%= link_to new_item_import_path, :class => "btn btn-default pull-right" do %><span class="fa fa-upload"></span><% end %>
+	
+	<%= link_to new_price_import_path, :class => "btn btn-default pull-right" do %><span class="fa fa-book"></span><% end %>
+	
+</div>
+
+<div id="myModal" class="modal modal-wide fade" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			
+		</div>
+	</div>
+</div>

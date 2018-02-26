@@ -1,0 +1,31 @@
+<% content_for :app_location do %>Admin / Purchase Orders / Index<% end %>
+<div id="purchase_orders" class="col-md-12">
+
+	<table class="table table-bordered table-condensed" id="purchase-orders-table" data-source="<%= datatables_purchase_orders_path(format: :json) %>">
+  	<thead>
+			<tr>
+				<th>Number</th>
+				<th>Vendor</th>
+				<th>Total</th>
+				<th>Notes</th>
+				<th>Received</th>
+				<th>Completed At</th>
+				<th>Locked</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+	
+	<%= link_to new_purchase_order_path, :class => "btn btn-default pull-right", :remote => false do %><span class="glyphicon glyphicon-plus"></span><% end %>
+	
+</div>
+
+<div id="myModal" class="modal fade" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			
+		</div>
+	</div>
+</div>

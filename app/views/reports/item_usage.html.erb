@@ -1,0 +1,26 @@
+<% content_for :app_location do %>Admin / Groups / Items Usage<% end %>
+<table class="table table-bordered table-condensed">
+  <tr>
+    <th>Index</th>
+    <th>Item Id</th>
+    <th>QTY Ordered</th>
+    <th>Item Number</th>
+    <th>Image</th>
+  </tr>
+
+  <% OrderLineItem.from_to_by_account_id(@from_date, @to_date, nil).select { |li| li.qty > 0 }.each_with_index do |li, i| %>
+    <tr>
+      <td><%= i %></td>
+      <td><%= li.item_id %></td>
+      <td><%= number_with_delimiter(li.qty) %></td>
+      <td><%= li.number %></td>
+      <td>
+        <% if li.item.images.size > 0 %>
+          <%= image_tag li.item.default_image_path, :class => "media-object", :height => "64", :width => "64" %>
+        <% else %>
+          <%= image_tag "https://s3.amazonaws.com/247officesuppy/400/400/NOA.JPG", :class => "media-object", :height => "64", :width => "64" %>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>

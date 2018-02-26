@@ -1,0 +1,43 @@
+SHIPMENT CONFIRMATION - 24/7 Office Supply
+===============================================
+
+Dear <%= @shipment.orders.first.ship_to_account_name %>,
+
+Thank you for your order, the following items have shipped.
+
+Sincerely,
+
+The 24/7 Office Supply Team.
+
+
+ORDER DETAILS:
+================
+NUMBER:		<%= @shipment.orders.first.number %>
+DATE:		<%= @shipment.ship_date.strftime("%m/%d/%Y") %>
+ACCOUNT:	<%= @shipment.orders.first.account.name unless @shipment.orders.first.account.nil? %>
+PO NUMBER:	<%= @shipment.orders.first.po_number %>
+NOTES: 		<%= @shipment.orders.first.notes %>
+
+SHIP TO ADDRESS:
+================
+<%= @shipment.orders.first.ship_to_account_name %>
+<%= @shipment.orders.first.ship_to_attention %>
+<%= @shipment.orders.first.ship_to_address_1 %>
+<%= @shipment.orders.first.ship_to_address_2 %>
+<%= @shipment.orders.first.ship_to_city %>, <%= @shipment.orders.first.ship_to_state %> <%= @shipment.orders.first.ship_to_zip %>
+<%= @shipment.orders.first.ship_to_phone %>
+
+THE FOLLOWING ITEMS HAVE SHIPPED:
+================
+<% @shipment.order_line_items.order(:order_line_number).each do |o| %>
+	<% if o.quantity_shipped > 0 %>
+<%= o.order_line_number %>.	<%= o.quantity_shipped.to_i %> x <%= "#{o.item.number} / #{o.item.name}" %>
+	<% if o.item.item_type_id == 99 || o.description.present? %>---> <%= o.description %> <% end %>
+	<% end %>
+<% end %>
+
+TRACKING INFORMATION
+================
+<% @shipment.tracking_numbers.each do |t| %>
+<%= @shipment.carrier %> - <%= t.number %> - <%= t.link %>
+<% end %>

@@ -1,0 +1,57 @@
+<% content_for :app_location do %>Invoices/New<% end %>
+<div id="orders" class="col-md-12">
+	
+	<%= form_for @invoice, url: order_invoices_path, :remote => false do |f| %>
+	
+	<table class="table table-bordered">
+		
+		<tr>
+			<th>Order Number</th>
+			<th>Bill To Account Name</th>
+			<th>Invoice Date</th>
+			<th>Due Date</th>
+		</tr>
+		
+		<tr>
+			<td><%= @order.number %></td>
+			<td><%= @order.ship_to_account_name %></td>
+			<td><%= f.date_field :date, :class => "form-control", :value => @order.submitted_at.to_date %></td>
+			<td><%= f.date_field :due_date, :class => "form-control", :value => @order.due_on.to_date %></td>
+		</tr>
+		
+	</table>
+	
+	<table class="table table-bordered">
+		
+		<tr>
+			<th>ID</th>
+			<th>Item Name/Description</th>
+			<th>Quantity Ordered</th>
+			<th>Quantity Fulfilled</th>
+			<th>Quantity To Fulfill Now</th>
+		<tr>
+		
+		<%= hidden_field_tag :order_id, params[:order_id].to_i %>
+		
+		<% @line_items.each_with_index do |li, idx| %>
+			<% if li.quantity_fulfilled.to_i != li.actual_quantity and li.actual_quantity != 0 %>
+			<%= hidden_field_tag "lines[#{idx}][order_line_item_id]", li.id.to_i %>
+			<tr>
+				<td><%= li.id %></td>
+				<td><%= "#{li.item.number} / #{li.item.name}" unless li.item.nil? %></td>
+				<td><%= li.actual_quantity %></td>
+				<td><%= li.quantity_fulfilled %></td>
+				<td><%= text_field_tag "lines[#{idx}][quantity_fulfill_now]", (li.actual_quantity.to_i - li.quantity_fulfilled.to_i), :class => "form-control" %></td>
+			<tr>
+			<% end %>
+		<% end %>
+
+		<tr>
+			<td colspan="5"><%= f.submit "Create Invoice", :class => "btn btn-primary pull-right" %></td>
+		</tr>
+		
+	</table>
+	
+	<% end %>
+	
+</div>

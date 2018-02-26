@@ -1,0 +1,23 @@
+<table class="table table-bordered table-condensed table-striped">
+	
+	<tr>
+		<td colspan="4"></td>
+	</tr>
+	
+	<tr>
+		<th>Replacement Item</th>
+		<th>Replacement Item UOM</th>
+		<th>Replacement Item UOM Quantity</th>
+		<th>Comments</th>
+	</tr>
+
+	<% item.item_substitutes.each do |it| %>
+	<tr>
+		<td><%= it.replacement_item.number %></td>
+		<td><%= it.repacement_uom %></td>
+		<td><%= it.replacement_uom_qty %></td>
+		<td><%= it.comments %></td>
+	</tr>
+	<% end %>
+
+</table>
